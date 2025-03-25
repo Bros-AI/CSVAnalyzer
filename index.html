@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online CSV file analyzer and visualizer with comprehensive statistics and reporting">
+    <meta name="keywords" content="CSV, data analysis, visualization, statistics, data explorer">
+    <meta name="author" content="CSV Analyzer">
+    <meta property="og:title" content="CSV File Analyzer - Visualize and analyze your data">
+    <meta property="og:description" content="Instantly analyze, visualize, and explore your CSV data">
+    <meta property="og:type" content="website">
+    <title>CSV File Analyzer - Visualize and analyze your data</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- External libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>CSV File Analyzer</h1>
+            <p class="hero-tagline">Instantly analyze, visualize, and explore your CSV data</p>
+            <div class="hero-cta">
+                <button id="heroUploadBtn" class="hero-btn">Upload CSV File</button>
+                <p class="hero-subtitle">Free online tool • No sign-up required • 100% secure</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="upload-section">
+            <h2>Upload CSV File</h2>
+            <input type="file" id="fileInput" class="file-input" accept=".csv">
+            <button id="uploadBtn" class="upload-btn">Choose File</button>
+            <p id="fileName">No file selected</p>
+            <p class="help-text">Upload a CSV file to analyze its structure and data</p>
+        </div>
+        
+        <div id="mainContent" class="hidden">
+            <div class="tabs">
+                <div class="tab active" data-tab="overview">Overview</div>
+                <div class="tab" data-tab="data">Data Explorer</div>
+                <div class="tab" data-tab="statistics">Statistics</div>
+                <div class="tab" data-tab="visualize">Visualize</div>
+                <div class="tab" data-tab="report">Report</div>
+            </div>
+            
+            <div id="overview" class="tab-content active">
+                <h2>File Overview</h2>
+                <div class="section">
+                    <h3>File Information</h3>
+                    <div id="fileInfo"></div>
+                </div>
+                
+                <div class="section">
+                    <h3>Quick Statistics</h3>
+                    <div id="quickStats" class="flex-container"></div>
+                </div>
+                
+                <div class="section">
+                    <h3>Column Overview</h3>
+                    <div id="columnOverview"></div>
+                </div>
+            </div>
+            
+            <div id="data" class="tab-content">
+                <h2>Data Explorer</h2>
+                <div class="section">
+                    <h3>Data Preview</h3>
+                    <input type="text" id="searchData" class="search-box" placeholder="Search in data...">
+                    <div class="data-nav">
+                        <div>
+                            <button id="prevPage" class="page-btn">Previous</button>
+                            <span id="pageInfo">Page 1 of 1</span>
+                            <button id="nextPage" class="page-btn">Next</button>
+                        </div>
+                        <div>
+                            <label>Rows per page: 
+                                <select id="rowsPerPage">
+                                    <option value="10">10</option>
+                                    <option value="25" selected>25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <div id="dataTable"></div>
+                </div>
+                
+                <div class="section">
+                    <h3>Column Analysis</h3>
+                    <select id="columnSelector" class="search-box"></select>
+                    <div id="columnAnalysis"></div>
+                </div>
+            </div>
+            
+            <div id="statistics" class="tab-content">
+                <h2>Statistical Analysis</h2>
+                <div class="section">
+                    <h3>Numerical Column Statistics</h3>
+                    <div id="numericalStats"></div>
+                </div>
+                
+                <div class="section">
+                    <h3>Text Column Analysis</h3>
+                    <div id="textStats"></div>
+                </div>
+                
+                <div class="section">
+                    <h3>Data Quality</h3>
+                    <div id="dataQuality"></div>
+                    <div class="chart-container">
+                        <canvas id="dataQualityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="visualize" class="tab-content">
+                <h2>Data Visualization</h2>
+                <div class="section">
+                    <h3>Chart Builder</h3>
+                    <div class="chart-options">
+                        <div>
+                            <label>Chart Type: 
+                                <select id="chartType">
+                                    <option value="bar">Bar Chart</option>
+                                    <option value="line">Line Chart</option>
+                                    <option value="pie">Pie Chart</option>
+                                    <option value="scatter">Scatter Plot</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div>
+                            <label>X-Axis: <select id="xAxisSelector"></select></label>
+                        </div>
+                        <div>
+                            <label>Y-Axis: <select id="yAxisSelector"></select></label>
+                        </div>
+                        <button id="generateChart" class="upload-btn">Generate Chart</button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="dataVisualizationChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>Distribution Analysis</h3>
+                    <select id="distributionColumnSelector" class="search-box"></select>
+                    <div class="chart-container">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="report" class="tab-content">
+                <h2>CSV Analysis Report</h2>
+                <div class="section text-center">
+                    <h3>Comprehensive CSV Analysis Report</h3>
+                    <p>This report provides a detailed overview of the CSV file structure, contents, and statistics.</p>
+                    <div class="action-bar">
+                        <button id="generateReport" class="action-btn">Generate Report</button>
+                        <button id="copyReport" class="action-btn">Copy to Clipboard</button>
+                        <button id="downloadReport" class="action-btn purple-btn">Download Report</button>
+                        <button id="exportCSV" class="action-btn green-btn">Export Processed CSV</button>
+                        <button id="exportJSON" class="action-btn">Export as JSON</button>
+                    </div>
+                </div>
+                <div class="section">
+                    <pre id="textReport">Click "Generate Report" to create a comprehensive summary of the CSV file.</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About CSV Analyzer</h3>
+                    <p>Free online tool to analyze, visualize and explore CSV data without uploading to any server.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Features</h3>
+                    <ul>
+                        <li>Comprehensive Analysis</li>
+                        <li>Data Visualization</li>
+                        <li>Quality Assessment</li>
+                        <li>Detailed Reports</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Privacy</h3>
+                    <p>Your data stays on your computer. We don't store or transmit your files to any server.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Created with ❤️ by <a href="https://github.com/BrosG" target="_blank">Gauthier Bros</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
